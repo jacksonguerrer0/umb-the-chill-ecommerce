@@ -1,0 +1,303 @@
+@startuml diagrama-componentes
+
+title Diagrama de Componentes — The Chill E-commerce SPA
+
+skinparam componentStyle rectangle
+skinparam backgroundColor #F0F9FF
+skinparam component {
+  BackgroundColor #DBF3FF
+  BorderColor #0077B6
+  FontColor #111827
+}
+skinparam package {
+  BackgroundColor #EFF9FF
+  BorderColor #0096C7
+}
+
+package "Cliente (Navegador)" {
+
+  package "Capa de Presentación" {
+    [Router SPA] as Router
+    [App Shell] as Shell
+
+    package "Vistas (Views)" {
+      [LandingView] as Landing
+      [CatalogoView] as Catalogo
+      [DetalleProductoView] as Detalle
+      [CarritoView] as Carrito
+      [PerfilView] as Perfil
+      [AdminProductosView] as AdminProd
+      [AdminPedidosView] as AdminPedidos
+    }
+
+    package "Componentes UI Reutilizables" {
+      [Navbar] as Navbar
+      [SkipLink] as SkipLink
+      [Breadcrumb] as Breadcrumb
+      [Button] as Button
+      [ProductCard] as ProductCard
+      [SelectorTamanio] as SelectorTam
+      [SelectorSabor] as SelectorSab
+      [ControlCantidad] as ControlCant
+      [CartSummary] as CartSummary
+      [Modal] as Modal
+      [AlertMessage] as Alert
+      [LoadingSpinner] as Spinner
+      [TablaAdmin] as TablaAdmin
+    }
+  }
+
+  package "Capa de Estado / Lógica" {
+    [CartStore] as CartStore
+    [ProductosService] as ProdService
+    [PedidosService] as PedService
+    [AuthService] as AuthService
+    [PerfilService] as PerfilService
+  }
+
+}
+
+package "Servidor (API REST)" {
+  [API Gateway] as API
+  [Productos Endpoint] as ProdAPI
+  [Pedidos Endpoint] as PedAPI
+  [Auth Endpoint] as AuthAPI
+  [Perfil Endpoint] as PerfilAPI
+}
+
+Router --> Shell
+Shell --> Navbar
+Shell --> SkipLink
+
+Router --> Landing
+Router --> Catalogo
+Router --> Detalle
+Router --> Carrito
+Router --> Perfil
+Router --> AdminProd
+Router --> AdminPedidos
+
+Landing --> ProductCard
+Landing --> Button
+Catalogo --> ProductCard
+Catalogo --> Alert
+Catalogo --> Spinner
+Detalle --> SelectorTam
+Detalle --> SelectorSab
+Detalle --> ControlCant
+Detalle --> Button
+Detalle --> Alert
+Carrito --> CartSummary
+Carrito --> ControlCant
+Carrito --> Modal
+Carrito --> Alert
+Carrito --> Spinner
+Perfil --> Alert
+Perfil --> Spinner
+AdminProd --> TablaAdmin
+AdminProd --> Modal
+AdminProd --> Button
+AdminProd --> Alert
+AdminPedidos --> TablaAdmin
+AdminPedidos --> Alert
+
+Catalogo --> Breadcrumb
+Detalle --> Breadcrumb
+Carrito --> Breadcrumb
+Perfil --> Breadcrumb
+AdminProd --> Breadcrumb
+
+Catalogo --> ProdService
+Detalle --> ProdService
+Detalle --> CartStore
+Carrito --> CartStore
+Carrito --> PedService
+Perfil --> PerfilService
+Perfil --> PedService
+AdminProd --> ProdService
+AdminPedidos --> PedService
+
+Navbar --> CartStore
+
+ProdService --> ProdAPI
+PedService --> PedAPI
+AuthService --> AuthAPI
+PerfilService --> PerfilAPI
+
+API --> ProdAPI
+API --> PedAPI
+API --> AuthAPI
+API --> PerfilAPI
+
+@enduml
+
+
+@startuml diagrama-navegacion
+
+title Diagrama de Navegación — The Chill E-commerce SPA
+
+skinparam state {
+  BackgroundColor #DBF3FF
+  BorderColor #0077B6
+  FontColor #111827
+  ArrowColor #0096C7
+}
+
+skinparam backgroundColor #F0F9FF
+
+[*] --> Landing : Acceso inicial
+
+Landing --> Catalogo : "Ver menú" o nav link "Menú"
+Landing --> Detalle : Click en card de producto destacado
+
+Catalogo --> Detalle : Click en "Ver →" en una card
+
+state Catalogo {
+  note right: Filtros por categoría\ncambian el contenido\nsin cambiar de vista\n(aria-live anuncia cambio)
+}
+
+Detalle --> Catalogo : Breadcrumb "Menú"\no botón "Volver"
+Detalle --> Carrito : "Agregar al carrito"\n[requiere tamaño y sabor seleccionados]
+
+state Detalle {
+  note right: Precio actualiza con\naria-live al cambiar tamaño.\nBotón deshabilitado hasta\ncompletar selección.
+}
+
+Carrito --> Catalogo : "Seguir comprando"
+Carrito --> ConfirmacionPedido : "Confirmar pedido"\n[formulario válido]
+Carrito --> Carrito : Cambiar cantidad\nEliminar producto\n[modal de confirmación]
+
+state Carrito {
+  note right: Campo dirección aparece\nsolo si se elige domicilio.\nFoco se mueve al campo.
+}
+
+ConfirmacionPedido --> Landing : "Volver al inicio"
+ConfirmacionPedido --> Catalogo : "Hacer otro pedido"
+
+state ConfirmacionPedido {
+  note right: Muestra número de pedido\ny tiempo estimado.\nSe anuncia con aria-live.
+}
+
+Landing --> Perfil : Click en "Perfil"\n(requiere sesión)
+Catalogo --> Perfil : Click en "Perfil"
+Perfil --> Catalogo : "Ir al menú"
+Perfil --> Detalle : "Repetir pedido" → precarga carrito
+
+Landing --> Login : "Iniciar sesión"
+Login --> Landing : Autenticación exitosa
+Login --> Login : Error de credenciales\n[aria-live anuncia error]
+
+Login --> AdminProd : [rol: administrador]
+AdminProd --> AdminPedidos : Tab "Pedidos"
+AdminPedidos --> AdminProd : Tab "Productos"
+AdminProd --> Login : "Cerrar sesión"
+
+@enduml
+
+
+@startuml diagrama-flujo-pedido
+
+title Flujo de Interacción — Hacer un Pedido en The Chill
+
+skinparam activity {
+  BackgroundColor #DBF3FF
+  BorderColor #0077B6
+  FontColor #111827
+  ArrowColor #0096C7
+  DiamondBackgroundColor #FFF9E6
+  DiamondBorderColor #92400E
+}
+
+skinparam backgroundColor #F0F9FF
+
+start
+
+:Cliente accede al catálogo;
+note right
+  Skip link disponible.
+  Filtros anuncian
+  resultados con aria-live.
+end note
+
+:Selecciona un producto;
+:Se abre vista de Detalle;
+note right
+  Foco se mueve al <h1>
+  del producto al cambiar vista.
+  Lector de pantalla lo anuncia.
+end note
+
+:Elige tamaño (radio buttons);
+:Precio actualiza automáticamente;
+note right
+  aria-live="polite"
+  aria-atomic="true"
+  Lector anuncia precio nuevo.
+end note
+
+:Elige sabor;
+
+if (¿Tamaño y sabor seleccionados?) then (Sí)
+  :Botón "Agregar al carrito"\nse habilita;
+else (No)
+  :Botón permanece con\naria-disabled="true";
+  note right: El lector de pantalla\npuede enfocar el botón\ny saber que está pendiente.
+  stop
+endif
+
+:Click "Agregar al carrito";
+:Contador del carrito actualiza;
+note right
+  aria-live anuncia:
+  "Granizado de fresa mediano
+  agregado al carrito. 1 producto."
+end note
+
+:Cliente va al carrito;
+
+if (¿Carrito tiene productos?) then (Sí)
+  :Revisa resumen del carrito;
+  :Completa formulario del pedido;
+else (No — carrito vacío)
+  :Mensaje "Tu carrito está vacío"\ny botón "Ver menú";
+  stop
+endif
+
+:Elige tipo de entrega;
+
+if (¿Tipo = Domicilio?) then (Sí)
+  :Campo "Dirección" aparece;
+  note right: Foco se mueve al campo.\naria-required="true".
+  :Ingresa dirección;
+else (Recoger en tienda)
+  :Campo dirección no aplica;
+endif
+
+:Click "Confirmar pedido";
+:Botón se deshabilita\n(aria-busy="true");
+:Spinner visible;
+
+if (¿Pedido enviado con éxito?) then (Sí)
+  :Vista de confirmación;
+  note right
+    aria-live="polite" anuncia:
+    "Pedido #001 confirmado.
+    Tiempo estimado: 15 minutos."
+  end note
+  :Cliente puede volver al inicio\no hacer otro pedido;
+else (No — error de red)
+  :Mensaje de error descriptivo;
+  note right
+    "No pudimos enviar tu pedido.
+    Verifica tu conexión y vuelve
+    a intentarlo."
+    Los datos del formulario
+    no se pierden.
+  end note
+  :Botón "Reintentar" disponible;
+  :Cliente reintenta;
+endif
+
+stop
+
+@enduml
