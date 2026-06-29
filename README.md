@@ -22,7 +22,9 @@ Diseñar una SPA accesible para The Chill donde los clientes puedan explorar el 
 ## Caso de Estudio
 
 **Negocio:** The Chill — Granizados y bebidas frías locales
+
 **Tipo de sistema:** E-commerce local — SPA accesible
+
 **Problema a resolver:** El negocio recibe pedidos por WhatsApp y en persona, lo que limita su alcance, genera errores de comunicación y excluye a clientes con diversidad funcional que no pueden usar esos canales de forma independiente. Se necesita una plataforma digital propia donde los clientes puedan ver el menú, personalizar su pedido y enviarlo sin barreras de acceso.
 
 ---
