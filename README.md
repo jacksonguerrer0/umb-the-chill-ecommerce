@@ -68,4 +68,3 @@ AcademiaUMB/                        ← Carpeta raíz del proyecto
 [Ver prototipo en Figma](https://www.figma.com/design/EKWhTTjiVo1j6faS3ud6mm)
 
 [Comunidad](https://www.figma.com/community/file/1653469951528280485)
-# UMB-the-chill
