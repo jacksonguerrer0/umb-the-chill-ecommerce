@@ -54,11 +54,8 @@ AcademiaUMB/                        ← Carpeta raíz del proyecto
 │   ├── analisis-requisitos.md      ← Roles, historias de usuario, MoSCoW
 │   ├── prototipado.md              ← Wireframes en papel: descripción y anotaciones
 │   ├── guia-estilos.md             ← Paleta The Chill, tipografía, componentes
-│   ├── figma-guia.md               ← Organización del archivo de Figma
 │   ├── decisiones.md               ← Decisiones de diseño y principios de ingeniería
-│   ├── diagramas.puml              ← Diagramas PlantUML
-│   ├── video-guion.md              ← Guion para el video demo
-│   └── checklist.md                ← Checklist de rúbrica
+│   └── diagramas.puml              ← Diagramas PlantUML
 │
 └── wireframes/
     ├── 1-2.jpeg
