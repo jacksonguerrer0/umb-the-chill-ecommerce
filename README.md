@@ -43,28 +43,6 @@ Diseñar una SPA accesible para The Chill donde los clientes puedan explorar el 
 
 ---
 
-## Estructura del Repositorio
-
-```
-AcademiaUMB/                        ← Carpeta raíz del proyecto
-│
-├── README.md                       ← Este archivo
-│
-├── docs/
-│   ├── analisis-requisitos.md      ← Roles, historias de usuario, MoSCoW
-│   ├── prototipado.md              ← Wireframes en papel: descripción y anotaciones
-│   ├── guia-estilos.md             ← Paleta The Chill, tipografía, componentes
-│   ├── decisiones.md               ← Decisiones de diseño y principios de ingeniería
-│   └── diagramas.puml              ← Diagramas PlantUML
-│
-└── wireframes/
-    ├── 1-2.jpeg
-    ├── 3-4.jpeg
-    └── 5.jpeg
-```
-
----
-
 ## Enlace al Prototipo en Figma
 
 [Ver prototipo en Figma](https://www.figma.com/design/EKWhTTjiVo1j6faS3ud6mm)
