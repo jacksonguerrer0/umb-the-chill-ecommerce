@@ -1,8 +1,11 @@
 # The Chill — E-commerce Local SPA Accesible
 
 **Actividad:** M1: Actividad de aprendizaje 2 — Diseño de Interfaz y Modelo de Navegación para SPA Accesible
+
 **Asignatura:** Ingeniería Web
+
 **Universidad:** Universidad Manuela Beltrán (UMB)
+
 **Autor:** Jackson Guerrero Vega
 
 ---
